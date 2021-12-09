@@ -16,7 +16,7 @@ const Attributes = ({ attributes, theme, onPick }) => {
 
     for (const key in attributes) {
         attributeList.push(
-            <span key={`attr-${key}[${attributes[key]}]`} onClick={(evt) => onAttrClick(key, evt)}>
+            <span className={onPick ? ' rxv-element__attribute --onPick' : 'rxv-element__attribute'} key={`attr-${key}[${attributes[key]}]`} onClick={(evt) => onAttrClick(key, evt)}>
                 <span style={{ color: theme.attributeKeyColor }}>{` ${key}`}</span>
                 <span style={{ color: theme.separatorColor }}>{"="}</span>
                 <span style={{ color: theme.attributeValueColor }}>{`"${attributes[key]}"`}</span>

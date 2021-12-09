@@ -3,3 +3,14 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+
+.rxv-element__name.--onPick:hover {
+  background-color: yellow;
+  cursor: pointer;
+}
+
+.rxv-element__attribute.--onPick:hover {
+  background-color: yellow;
+  cursor: pointer;
+}

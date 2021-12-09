@@ -20,8 +20,6 @@ function onSelectText(e) {
 }
 
 const Element = memo(({ name, elements, attributes, theme, indentation, indentSize, collapsible, onPick }) => {
-    const cursor = (onPick) ? 'pointer' : 'text';
-
     function onTagClick() {
         if (onPick) {
             onPick(`/${name}`);
@@ -41,14 +39,14 @@ const Element = memo(({ name, elements, attributes, theme, indentation, indentSi
     }
 
     return (
-        <div style={{ whiteSpace: 'pre', cursor }} onClick={onTagClick}>
+        <div className={onPick ? ' rxv-element --onPick' : 'rxv-element'} style={{ whiteSpace: 'pre' }} onClick={onTagClick}>
             <span style={{ color: theme.separatorColor }}>{`${indentation}<`}</span>
-            <span style={{ color: theme.tagColor }}>{name}</span>
+            <span className={onPick ? ' rxv-element__name --onPick' : 'rxv-element'} style={{ color: theme.tagColor }}>{name}</span>
             {<Attributes onPick={onAttrClick} attributes={attributes} theme={theme} /> }
             <span style={{ color: theme.separatorColor }}>{(elements ? '>' : '/>')}</span>
             {elements && <span onClick={onSelectText}><Elements onPick={onElementsClick} elements={elements} theme={theme} indentation={indentation + getIndentationString(indentSize)} indentSize={indentSize} collapsible={collapsible} /></span>}
             {elements && <span style={{ color: theme.separatorColor }}>{`${(isTextElement(elements)) ? "" : indentation}</`}</span>}
-            {elements && <span style={{ color: theme.tagColor }}>{name}</span>}
+            {elements && <span className={onPick ? ' rxv-element__name --onPick' : 'rxv-element'} style={{ color: theme.tagColor }}>{name}</span>}
             {elements && <span style={{ color: theme.separatorColor }}>{">"}</span>}
         </div>
     );
@@ -75,7 +73,7 @@ const getElement = (theme, indentation, indentSize, collapsible, onElmPick) => (
         case "cdata":
             return <CdataElement key={`el-${index}`} cdata={element.cdata} theme={theme} indentation={indentation} />;
         case "instruction":
-            return <InstructionElement key={`el-${index}`} instruction={element.instruction} name={element.name} theme={theme} indentation={indentation} />;
+            return <InstructionElement onPick={onElmPick} key={`el-${index}`} instruction={element.instruction} name={element.name} theme={theme} indentation={indentation} />;
         default:
             return null;
     }
