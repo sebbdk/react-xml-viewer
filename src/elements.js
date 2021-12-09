@@ -22,7 +22,7 @@ function onSelectText(e) {
 const Element = memo(({ name, elements, attributes, theme, indentation, indentSize, collapsible, onPick }) => {
     const cursor = (collapsible && elements) ? 'pointer' : 'text';
 
-    function onTagClick(event) {
+    function onTagClick() {
         if (onPick) {
             onPick(`/${name}`);
         }
