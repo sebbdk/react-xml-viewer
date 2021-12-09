@@ -15,22 +15,11 @@ function isTextElement(elements) {
     return elements.length === 1 && elements[0].type === "text";
 }
 
-function getSelectedText() {
-    if (window.getSelection) {
-        return window.getSelection().toString();
-    } else if (document.selection) {
-        return document.selection.createRange().text;
-    }
-    return '';
-}
-
 function onSelectText(e) {
     e.stopPropagation()
 }
 
 const Element = memo(({ name, elements, attributes, theme, indentation, indentSize, collapsible, onPick }) => {
-    //const [collapsed, toggleCollapse] = useState(false);
-
     const cursor = (collapsible && elements) ? 'pointer' : 'text';
 
     function onTagClick(event) {
