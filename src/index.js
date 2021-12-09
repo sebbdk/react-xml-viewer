@@ -19,7 +19,7 @@ const defaultTheme = {
 
 const defaultInvalidXml = (<div>Invalid XML!</div>);
 
-const XMLViewer = ({ xml, theme, indentSize, invalidXml, collapsible, ...props }) => {
+const XMLViewer = ({ xml, theme, indentSize, invalidXml, collapsible, onPick, ...props }) => {
   let json = null;
   const customTheme = { ...defaultTheme, ...theme };
 
@@ -35,7 +35,7 @@ const XMLViewer = ({ xml, theme, indentSize, invalidXml, collapsible, ...props }
   return (
     <div {...props}>
       {json.declaration && <DeclarationElement theme={customTheme} attributes={json.declaration.attributes} />}
-      <Elements elements={json.elements} theme={customTheme} indentSize={indentSize} indentation="" collapsible={collapsible} />
+      <Elements onPick={onPick} elements={json.elements} theme={customTheme} indentSize={indentSize} indentation="" collapsible={collapsible} />
     </div>
   );
 }

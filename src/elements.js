@@ -28,33 +28,37 @@ function onSelectText(e) {
     e.stopPropagation()
 }
 
-const Element = memo(({ name, elements, attributes, theme, indentation, indentSize, collapsible }) => {
-    const [collapsed, toggleCollapse] = useState(false);
+const Element = memo(({ name, elements, attributes, theme, indentation, indentSize, collapsible, onPick }) => {
+    //const [collapsed, toggleCollapse] = useState(false);
 
     const cursor = (collapsible && elements) ? 'pointer' : 'text';
 
+    function onTagClick(event) {
+        if (onPick) {
+            onPick(`/${name}`);
+        }
+    }
+
+    function onAttrClick(xpath) {
+        if (onPick) {
+            onPick(`/${name}${xpath}`);
+        }
+    }
+
+    function onElementsClick(xpath) {
+        if (onPick) {
+            onPick(`/${name}${xpath}`);
+        }
+    }
+
     return (
-        <div
-            style={{ whiteSpace: 'pre', cursor }}
-            onClick={(event) => {
-                if(!collapsible || !elements) {
-                    return;
-                }
-                event.stopPropagation();
-                event.preventDefault();
-
-                if(getSelectedText() === '') {
-                    toggleCollapse(!collapsed);
-                }
-
-            }}
-        >
+        <div style={{ whiteSpace: 'pre', cursor }} onClick={onTagClick}>
             <span style={{ color: theme.separatorColor }}>{`${indentation}<`}</span>
             <span style={{ color: theme.tagColor }}>{name}</span>
-            {!collapsed && <Attributes attributes={attributes} theme={theme} /> }
+            {<Attributes onPick={onAttrClick} attributes={attributes} theme={theme} /> }
             <span style={{ color: theme.separatorColor }}>{(elements ? '>' : '/>')}</span>
-            {elements && !collapsed && <span onClick={onSelectText}><Elements elements={elements} theme={theme} indentation={indentation + getIndentationString(indentSize)} indentSize={indentSize} collapsible={collapsible} /></span>}
-            {elements && <span style={{ color: theme.separatorColor }}>{`${(isTextElement(elements) || collapsed) ? "" : indentation}</`}</span>}
+            {elements && <span onClick={onSelectText}><Elements onPick={onElementsClick} elements={elements} theme={theme} indentation={indentation + getIndentationString(indentSize)} indentSize={indentSize} collapsible={collapsible} /></span>}
+            {elements && <span style={{ color: theme.separatorColor }}>{`${(isTextElement(elements)) ? "" : indentation}</`}</span>}
             {elements && <span style={{ color: theme.tagColor }}>{name}</span>}
             {elements && <span style={{ color: theme.separatorColor }}>{">"}</span>}
         </div>
@@ -71,12 +75,12 @@ Element.propTypes = {
     collapsible: PropTypes.bool.isRequired,
 }
 
-const getElement = (theme, indentation, indentSize, collapsible) => (element, index) => {
+const getElement = (theme, indentation, indentSize, collapsible, onElmPick) => (element, index) => {
     switch (element.type) {
         case "text":
             return <TextElement key={`el-${index}`} text={element.text} theme={theme} />;
         case "element":
-            return <Element key={`el-${index}`} name={element.name} elements={element.elements} attributes={element.attributes} theme={theme} indentation={indentation} indentSize={indentSize} collapsible={collapsible} />
+            return <Element onPick={onElmPick} key={`el-${index}`} name={element.name} elements={element.elements} attributes={element.attributes} theme={theme} indentation={indentation} indentSize={indentSize} collapsible={collapsible} />
         case "comment":
             return <CommentElement key={`el-${index}`} comment={element.comment} theme={theme} indentation={indentation} />;
         case "cdata":
@@ -88,8 +92,14 @@ const getElement = (theme, indentation, indentSize, collapsible) => (element, in
     }
 }
 
-const Elements = memo(({ elements, theme, indentation, indentSize, collapsible }) => {
-    return elements.map(getElement(theme, indentation, indentSize, collapsible));
+const Elements = memo(({ elements, theme, indentation, indentSize, collapsible, onPick }) => {
+    function onElmPick(xpath) {
+        if (onPick) {
+            onPick(xpath);
+        }
+    }
+
+    return elements.map(getElement(theme, indentation, indentSize, collapsible, onElmPick));
 });
 
 Elements.propTypes = {
